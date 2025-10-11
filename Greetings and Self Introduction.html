@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Greetings & Self Introduction — Classroom Game</title>
+  <style>
+    :root{--bg:#f6fbff;--card:#ffffff;--accent:#4f46e5;--muted:#6b7280;--success:#10b981}
+    *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    body{margin:0;background:linear-gradient(180deg,var(--bg),#eef2ff);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .app{width:100%;max-width:980px;background:var(--card);border-radius:16px;box-shadow:0 10px 30px rgba(15,23,42,0.08);overflow:hidden}
+    header{display:flex;align-items:center;gap:16px;padding:18px 22px;border-bottom:1px solid #eef2ff}
+    header h1{margin:0;font-size:20px;color:var(--accent)}
+    .controls{display:flex;gap:10px;margin-left:auto}
+    button{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600}
+    main{display:grid;grid-template-columns:1fr 360px;gap:18px;padding:20px}
+    .panel{background:linear-gradient(180deg,#fff,#fbfdff);padding:18px;border-radius:12px;box-shadow:0 4px 18px rgba(71,85,255,0.06)}
+    .game-area{min-height:420px}
+    .menu{display:flex;gap:10px;flex-wrap:wrap}
+    .menu button{background:#eef2ff;color:var(--accent);border:1px solid rgba(79,70,229,0.08)}
+    .hidden{display:none}
+    .greeting-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .card{background:linear-gradient(180deg,#ffffff,#f8fafc);padding:12px;border-radius:10px;border:1px solid #eef2ff;min-height:80px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+    .large{font-size:18px;font-weight:700;color:#0f172a}
+    .muted{color:var(--muted);font-size:13px}
+    .match-row{display:flex;gap:12px;margin-top:12px}
+    .draggable{background:#fff;border-radius:8px;padding:8px 10px;border:1px dashed #c7cddb;cursor:grab}
+    .dropzone{min-height:48px;border:2px dashed #e6eefc;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:6px}
+    .score{font-weight:700;color:var(--success)}
+    aside .panel{position:sticky;top:20px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input,select,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #e6eefc}
+    .speech-btn{background:#fff;color:var(--accent);border:1px solid rgba(79,70,229,0.08)}
+    footer{padding:12px 20px;border-top:1px solid #eef2ff;text-align:center;color:var(--muted);font-size:13px}
+    .success{background:#ecfdf5;border:1px solid #bbf7d0;color:#064e3b;padding:8px 10px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <header>
+      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 24 24' fill='none'><rect width='24' height='24' rx='6' fill='%234f46e5'/><path d='M7 12h10M7 8h10M7 16h6' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>" alt="logo" style="width:44px;height:44px;border-radius:8px;"/>
+      <h1>Greetings & Self Introduction — Classroom Game</h1>
+      <div class="controls">
+        <button id="btnReset">Reset</button>
+        <button id="btnHelp">Cara Main</button>
+      </div>
+    </header>
+    <main>
+      <section class="panel game-area" aria-labelledby="menuTitle">
+        <h2 id="menuTitle" style="margin:0 0 12px 0;color:#0f172a">Pilih Game</h2>
+        <div class="menu">
+          <button data-game="match">Greeting Match</button>
+          <button data-game="bingo">Greeting Bingo</button>
+          <button data-game="intro">Introduce Yourself</button>
+          <button data-game="guess">Guess Who</button>
+        </div>
+
+        <!-- Greeting Match -->
+        <div id="game-match" class="game-screen hidden">
+          <h3>Greeting Match</h3>
+          <p class="muted">Seret jawaban ke kotak yang sesuai. Cocokkan greeting dengan situasi.</p>
+          <div style="display:flex;gap:12px;margin-top:12px;">
+            <div style="flex:1">
+              <div class="greeting-cards" id="matchZones"></div>
+            </div>
+            <div style="width:220px">
+              <label>Answers</label>
+              <div id="answerPool" style="display:flex;flex-direction:column;gap:8px"></div>
+            </div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+            <button id="checkMatch">Cek Jawaban</button>
+            <div id="matchResult" class="muted"></div>
+          </div>
+        </div>
+
+        <!-- Greeting Bingo -->
+        <div id="game-bingo" class="game-screen hidden">
+          <h3>Greeting Bingo</h3>
+          <p class="muted">Buat satu garis (horizontal/vertikal/diagonal). Klik kotak saat guru membacakan.</p>
+          <div id="bingoBoard" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:420px;margin-top:12px"></div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button id="callPhrase">Panggil Frasa Acak</button>
+            <button id="resetBingo">Reset</button>
+            <div id="bingoStatus" class="muted"></div>
+          </div>
+        </div>
+
+        <!-- Introduce Yourself -->
+        <div id="game-intro" class="game-screen hidden">
+          <h3>Introduce Yourself</h3>
+          <p class="muted">Isi form lalu klik <strong>Speak</strong> untuk mendengarkan kalimat perkenalan. Bisa dipakai sebagai latihan berbicara.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+            <div>
+              <label for="iname">Name</label>
+              <input id="iname" placeholder="e.g. Dita" />
+            </div>
+            <div>
+              <label for="iage">Age</label>
+              <input id="iage" placeholder="e.g. 13" />
+            </div>
+            <div style="grid-column:1 / -1">
+              <label for="ihobby">Hobby</label>
+              <input id="ihobby" placeholder="e.g. drawing" />
+            </div>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+            <button id="btnSpeak" class="speech-btn">Speak</button>
+            <button id="btnCopy">Copy Text</button>
+            <div id="speakPreview" class="muted"></div>
+          </div>
+          <div style="margin-top:12px">
+            <label for="practiceArea">Practice Area (type or paste):</label>
+            <textarea id="practiceArea" rows="4" placeholder="Write your introduction here..." style="resize:vertical"></textarea>
+          </div>
+        </div>
+
+        <!-- Guess Who -->
+        <div id="game-guess" class="game-screen hidden">
+          <h3>Guess Who</h3>
+          <p class="muted">Tulis deskripsi singkat tentang dirimu (bahasa Inggris). Guru atau sistem akan mengacak dan membacakan. Tugas teman: tebak siapa yang dimaksud.</p>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <input id="descInput" placeholder="I am 13. I like football. I live in Mataram." />
+            <button id="submitDesc">Submit</button>
+          </div>
+          <div style="margin-top:12px">
+            <button id="readRandom">Bacakan Deskripsi Acak</button>
+            <div id="guessList" style="margin-top:10px;display:flex;flex-direction:column;gap:8px"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <aside class="panel">
+        <h3 style="margin-top:0">Teacher Controls</h3>
+        <p class="muted">Gunakan panel ini untuk memandu kegiatan di kelas.</p>
+        <div style="margin-top:12px">
+          <label>Class Size</label>
+          <input id="classSize" type="number" value="24" />
+        </div>
+        <div style="margin-top:10px">
+          <label>Current Score</label>
+          <div id="scoreboard" class="success">0 pts</div>
+        </div>
+        <div style="margin-top:14px">
+          <label>Tips for teacher</label>
+          <ul style="margin:8px 0 0 18px;color:var(--muted)">
+            <li>Encourage students to smile and speak clearly.</li>
+            <li>Use Speak button for pronunciation model.</li>
+            <li>Praise attempts, emphasize love and respect.</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+    <footer>
+      Built for classroom — Greetings & Self Introduction. Save this file as <code>greetings-game.html</code> and open in browser.
+    </footer>
+  </div>
+
+  <script>
+    // --- Helpers ---
+    const qs = s => document.querySelector(s);
+    const qsa = s => document.querySelectorAll(s);
+    const games = {match: qs('#game-match'), bingo: qs('#game-bingo'), intro: qs('#game-intro'), guess: qs('#game-guess')};
+    // menu
+    qsa('.menu button').forEach(b => b.addEventListener('click', ()=>{
+      Object.values(games).forEach(g=>g.classList.add('hidden'));
+      const g = b.dataset.game; games[g].classList.remove('hidden');
+      qs('#matchResult').textContent = '';
+      qs('#bingoStatus').textContent = '';
+    }));
+
+    // Reset
+    qs('#btnReset').addEventListener('click', ()=> location.reload());
+    qs('#btnHelp').addEventListener('click', ()=> alert('Pilih game lalu ikuti instruksi pada layar. \nGreeting Match: seret jawaban ke situasi. \nGreeting Bingo: klik kotak saat frasa disebut. \nIntroduce Yourself: isi form lalu klik Speak untuk dengar kalimat. \nGuess Who: tulis deskripsi, guru bacakan, teman menebak.'));
+
+    // ---- Greeting Match Setup ----
+    const matchData = [
+      {id:'m1',prompt:'You meet your teacher at 7 AM',answer:'Good morning'},
+      {id:'m2',prompt:'You meet your friend at 3 PM',answer:'Good afternoon'},
+      {id:'m3',prompt:'You meet a friend at night',answer:'Good evening'},
+      {id:'m4',prompt:'You say when you meet someone first time',answer:'Nice to meet you'},
+      {id:'m5',prompt:'Casual greeting to a friend',answer:'Hi'},
+      {id:'m6',prompt:'Ask about someone',answer:'How are you?'}
+    ];
+
+    function setupMatch(){
+      const zones = qs('#matchZones'); zones.innerHTML='';
+      const pool = qs('#answerPool'); pool.innerHTML='';
+      // create drop zones
+      matchData.forEach(item=>{
+        const z = document.createElement('div'); z.className='card dropzone'; z.dataset.id=item.id;
+        z.innerHTML = `<div class="muted">${item.prompt}</div><div style="margin-top:8px" data-placed></div>`;
+        zones.appendChild(z);
+      });
+      // shuffle answers
+      const answers = matchData.map(m=>m.answer).sort(()=>Math.random()-0.5);
+      answers.forEach(ans=>{
+        const d = document.createElement('div'); d.className='draggable'; d.draggable=true; d.textContent=ans;
+        d.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', ans); });
+        pool.appendChild(d);
+      });
+      // allow drop
+      qsa('.dropzone').forEach(zone=>{
+        zone.addEventListener('dragover', e=>{ e.preventDefault(); zone.style.boxShadow='inset 0 0 0 2px rgba(79,70,229,0.06)'; });
+        zone.addEventListener('dragleave', e=>{ zone.style.boxShadow='none'; });
+        zone.addEventListener('drop', e=>{
+          e.preventDefault(); zone.style.boxShadow='none';
+          const val = e.dataTransfer.getData('text/plain');
+          const placed = zone.querySelector('[data-placed]');
+          placed.textContent = val; placed.dataset.value = val;
+          // remove from pool
+          qsa('#answerPool .draggable').forEach(d=>{ if(d.textContent===val) d.remove(); });
+        });
+      });
+    }
+    qs('#checkMatch').addEventListener('click', ()=>{
+      let correct = 0; matchData.forEach(item=>{
+        const zone = qs(`[data-id="${item.id}"]`);
+        const v = zone.querySelector('[data-placed]')?.dataset.value || '';
+        if(v===item.answer) correct++;
+      });
+      qs('#matchResult').textContent = `Score: ${correct} / ${matchData.length}`;
+      qs('#scoreboard').textContent = `${correct*10} pts`;
+    });
+    setupMatch();
+
+    // ---- Bingo ----
+    const bingoPhrases = ['Hello','Hi','Good morning','Good afternoon','Good evening','How are you?','Nice to meet you','See you','I\'m fine, thank you'];
+    let bingoBoard = [];
+    function setupBingo(){
+      const board = qs('#bingoBoard'); board.innerHTML=''; bingoBoard = [];
+      const phrases = bingoPhrases.slice().sort(()=>Math.random()-0.5).slice(0,9);
+      phrases.forEach((p,i)=>{
+        const b = document.createElement('button'); b.className='card'; b.textContent=p; b.dataset.idx=i; b.addEventListener('click', ()=>{
+          b.classList.toggle('marked'); checkBingo();
+        });
+        board.appendChild(b);
+        bingoBoard.push({text:p,marked:false});
+      });
+      qs('#bingoStatus').textContent='';
+    }
+    function checkBingo(){
+      const buttons = Array.from(qsa('#bingoBoard .card'));
+      const marks = buttons.map(b=>b.classList.contains('marked'));
+      // rows
+      const winLines = [
+        [0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]
+      ];
+      let winner=false; winLines.forEach(line=>{ if(line.every(i=>marks[i])) winner=true; });
+      if(winner) qs('#bingoStatus').innerHTML = '<span class="score">BINGO! 🎉</span>';
+    }
+    qs('#callPhrase').addEventListener('click', ()=>{
+      const p = bingoPhrases[Math.floor(Math.random()*bingoPhrases.length)];
+      alert('Teacher calls: ' + p);
+      qs('#bingoStatus').textContent = 'Called: ' + p;
+    });
+    qs('#resetBingo').addEventListener('click', setupBingo);
+    setupBingo();
+
+    // ---- Introduce Yourself (Speak) ----
+    function makeIntroText(){
+      const name = qs('#iname').value.trim() || 'My name is ____';
+      const age = qs('#iage').value.trim() ? `I am ${qs('#iage').value.trim()} years old.` : '';
+      const hobby = qs('#ihobby').value.trim() ? `I like ${qs('#ihobby').value.trim()}.` : '';
+      const text = `Hello! ${name}. ${age} ${hobby} Nice to meet you.`.replace(/\s+/g,' ').trim();
+      return text;
+    }
+    qs('#btnSpeak').addEventListener('click', ()=>{
+      const text = makeIntroText(); qs('#speakPreview').textContent = text;
+      if('speechSynthesis' in window){
+        const ut = new SpeechSynthesisUtterance(text); ut.lang = 'en-US'; window.speechSynthesis.cancel(); window.speechSynthesis.speak(ut);
+      } else alert('Speech not supported in this browser.');
+    });
+    qs('#btnCopy').addEventListener('click', ()=>{ qs('#practiceArea').value = makeIntroText(); alert('Copied to practice area.'); });
+
+    // ---- Guess Who ----
+    const guesses = [];
+    qs('#submitDesc').addEventListener('click', ()=>{
+      const text = qs('#descInput').value.trim(); if(!text) return alert('Please write a short description.');
+      const id = 'd'+Math.random().toString(36).slice(2,8);
+      guesses.push({id,text}); renderGuesses(); qs('#descInput').value='';
+    });
+    function renderGuesses(){
+      const list = qs('#guessList'); list.innerHTML=''; guesses.forEach(g=>{
+        const el = document.createElement('div'); el.className='card'; el.textContent = g.text; el.dataset.id=g.id; list.appendChild(el);
+      });
+    }
+    qs('#readRandom').addEventListener('click', ()=>{
+      if(guesses.length===0) return alert('No descriptions yet.');
+      const pick = guesses[Math.floor(Math.random()*guesses.length)];
+      if('speechSynthesis' in window){ const ut = new SpeechSynthesisUtterance(pick.text); ut.lang='en-US'; window.speechSynthesis.cancel(); window.speechSynthesis.speak(ut);} else alert(pick.text);
+    });
+
+    // initialize first game visible
+    document.querySelector('.menu button').click();
+  </script>
+</body>
+</html>
