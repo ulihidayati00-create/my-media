@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz: Describing People (To Be & Adjectives) - Grade 7</title>
+  <style>
+    :root{
+      --accent:#6C5CE7; /* soft purple */
+      --accent-2:#00B894; /* teal */
+      --bg-overlay: rgba(0,0,0,0.45);
+      --card:#ffffffcc;
+      --glass: rgba(255,255,255,0.08);
+      --radius:14px;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    html,body{height:100%;margin:0}
+    body{
+      background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=80');
+      background-size:cover;background-position:center;
+      display:flex;align-items:center;justify-content:center;color:#111;
+    }
+    .overlay{position:fixed;inset:0;background:var(--bg-overlay);}
+    .container{
+      width:min(980px,95%);max-height:92vh;overflow:auto;border-radius:18px;padding:22px;box-sizing:border-box;
+      background:linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));backdrop-filter: blur(6px);
+      box-shadow: 0 10px 40px rgba(10,10,10,0.45);border:1px solid rgba(255,255,255,0.06);
+      position:relative;z-index:2;
+    }
+    header{display:flex;gap:16px;align-items:center}
+    .logo{width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:22px}
+    h1{margin:0;font-size:20px;color:#fff}
+    p.lead{margin:4px 0 0;color: #e7e7ff}
+
+    .main{display:grid;grid-template-columns: 1fr 360px;gap:18px;margin-top:18px}
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.18)}
+    .quiz-area{min-height:320px}
+    .question{font-size:18px;margin-bottom:12px}
+    .options{display:flex;flex-direction:column;gap:10px}
+    .opt{padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:linear-gradient(180deg,#fff,#f6f6ff);cursor:pointer}
+    .opt.selected{outline:3px solid rgba(108,92,231,0.18)}
+
+    .right-panel{position:sticky;top:22px}
+    .levels{display:flex;gap:10px;margin-bottom:12px}
+    .level-btn{padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,#ffffffaa,#ffffff66);cursor:pointer;border:1px solid rgba(0,0,0,0.06)}
+    .level-btn.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:white}
+    .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+    .controls{display:flex;gap:10px;margin-top:14px}
+    button.btn{padding:10px 14px;border-radius:10px;border:none;background:var(--accent);color:white;cursor:pointer}
+    button.btn.secondary{background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.12)}
+
+    .small{font-size:13px;color:#333}
+    footer{margin-top:18px;color:#ddd;font-size:13px}
+
+    .video-wrap{margin-top:12px;border-radius:10px;overflow:hidden;background:#000}
+    video{width:100%;height:auto;display:block}
+
+    /* responsive */
+    @media (max-width:880px){.main{grid-template-columns:1fr}.right-panel{position:relative}} 
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <div class="container">
+    <header>
+      <div class="logo">JSP</div>
+      <div>
+        <h1>Quiz: Describing People — To Be & Adjectives</h1>
+        <p class="lead">Kelas 7 • 20 questions • Levelled (Easy, Medium, Hard) • Love-based learning</p>
+      </div>
+    </header>
+
+    <div class="main">
+      <div class="card quiz-area" id="quizCard">
+        <div id="levelTag" class="small">Level: <strong id="levelName">Easy</strong></div>
+        <div class="question" id="questionText">Loading question...</div>
+
+        <div id="videoContainer" class="video-wrap" style="display:none">
+          <!-- video for hard-level questions -->
+          <video id="qVideo" controls preload="metadata">
+            <source src="https://sample-videos.com/video123/mp4/240/big_buck_bunny_240p_1mb.mp4" type="video/mp4">
+            Your browser does not support HTML5 video.
+          </video>
+        </div>
+
+        <div class="options" id="options"></div>
+
+        <div class="controls">
+          <button class="btn" id="nextBtn">Next</button>
+          <button class="btn secondary" id="showAnswerBtn">Show Answer</button>
+          <div style="margin-left:auto" class="small">Score: <span id="score">0</span></div>
+        </div>
+
+        <footer>
+          Tips: Use kind words when describing others. This quiz practices grammar and positive attitude ❤️
+        </footer>
+      </div>
+
+      <aside class="right-panel">
+        <div class="card">
+          <div class="meta">
+            <div><strong id="qIndex">0</strong>/20</div>
+            <div id="progressBar" style="flex:1;height:10px;background:linear-gradient(90deg,#eee,#ddd);border-radius:8px;overflow:hidden">
+              <div id="progress" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2))"></div>
+            </div>
+          </div>
+
+          <hr/>
+
+          <div class="levels">
+            <div class="level-btn active" data-level="easy">Easy</div>
+            <div class="level-btn" data-level="medium">Medium</div>
+            <div class="level-btn" data-level="hard">Hard</div>
+          </div>
+
+          <div style="margin-top:8px" class="small">Audio effects: on</div>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button class="btn secondary" id="restartBtn">Restart</button>
+            <button class="btn secondary" id="downloadBtn">Download HTML</button>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="card small">
+          <strong>Instructions</strong>
+          <ol>
+            <li>Choose the correct answer for each question.</li>
+            <li>Hard level contains short video prompts — pay attention to the clip.</li>
+            <li>Be kind when writing or presenting.</li>
+          </ol>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    // Quiz data (20 questions) - video field used for hard level items
+    const questions = [
+      {id:1, level:'easy', q:'She ___ beautiful.', opts:['am','is','are','be'], ans:1},
+      {id:2, level:'easy', q:'I ___ tall and slim.', opts:['is','are','am','be'], ans:2},
+      {id:3, level:'easy', q:'They ___ my friends.', opts:['am','are','is','was'], ans:1},
+      {id:4, level:'easy', q:'He ___ short.', opts:['am','are','is','be'], ans:2},
+      {id:5, level:'easy', q:'My sister is very ___. She always smiles.', opts:['sad','angry','happy','lazy'], ans:2},
+      {id:6, level:'easy', q:'The boy is ___. He likes helping people.', opts:['kind','mean','rude','ugly'], ans:0},
+      {id:7, level:'easy', q:'We ___ in the same class.', opts:['am','is','are','was'], ans:2},
+
+      {id:8, level:'medium', q:'My father is very ___. He works hard every day.', opts:['lazy','diligent','sad','sleepy'], ans:1},
+      {id:9, level:'medium', q:'They are my best friends. They ___ very friendly.', opts:['am','is','are','be'], ans:2},
+      {id:10, level:'medium', q:'Sarah ___ beautiful eyes and long hair.', opts:['has','is','have','are'], ans:0},
+      {id:11, level:'medium', q:'My teacher is not old. He ___ young.', opts:['are','am','is','be'], ans:2},
+      {id:12, level:'medium', q:'The twins ___ tall and thin.', opts:['is','am','are','be'], ans:2},
+      {id:13, level:'medium', q:'Look at Judy! She ___ so smart and confident.', opts:['am','are','is','be'], ans:2},
+      {id:14, level:'medium', q:'He is not shy, he is ___.', opts:['quiet','confident','lazy','weak'], ans:1},
+
+      // Hard level: include video prompt for some
+      {id:15, level:'hard', q:'(Watch the short video) My classmates are very ___. They always help each other.', opts:['selfish','friendly','lazy','rude'], ans:1, video:true},
+      {id:16, level:'hard', q:'(Watch the short video) The girl in red ___ my sister.', opts:['are','is','am','be'], ans:1, video:true},
+      {id:17, level:'hard', q:'(Watch the short video) I think my English teacher ___ very patient.', opts:['are','am','is','be'], ans:2, video:true},
+      {id:18, level:'hard', q:'We ___ happy because today is our holiday.', opts:['are','am','is','be'], ans:0},
+      {id:19, level:'hard', q:'"Is your brother tall?" — "Yes, he ___ ."', opts:['is','are','am','be'], ans:0},
+      {id:20, level:'hard', q:'Choose the correct sentence:\n a) She are beautiful.\n b) They is smart.\n c) I am happy.\n d) You is tall.', opts:['She are beautiful.','They is smart.','I am happy.','You is tall.'], ans:2}
+    ];
+
+    // UI refs
+    const questionText = document.getElementById('questionText');
+    const optionsDiv = document.getElementById('options');
+    const nextBtn = document.getElementById('nextBtn');
+    const scoreEl = document.getElementById('score');
+    const qIndex = document.getElementById('qIndex');
+    const progress = document.getElementById('progress');
+    const levelBtns = document.querySelectorAll('.level-btn');
+    const levelName = document.getElementById('levelName');
+    const videoContainer = document.getElementById('videoContainer');
+    const qVideo = document.getElementById('qVideo');
+    const showAnswerBtn = document.getElementById('showAnswerBtn');
+
+    let state = {
+      level: 'easy',
+      filtered: [],
+      current: 0,
+      score: 0,
+      answers: []
+    };
+
+    // audio feedback using Web Audio API (simple)
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = AudioCtx ? new AudioCtx() : null;
+    function beep(duration=0.08,freq=520,vol=0.1){
+      if(!audioCtx) return;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type='sine';o.frequency.value=freq;g.gain.value=vol;
+      o.connect(g);g.connect(audioCtx.destination);
+      o.start();setTimeout(()=>{o.stop()},duration*1000);
+    }
+
+    function filterQuestions(){
+      state.filtered = questions.filter(q=>q.level===state.level);
+      // if user chose a level, show all questions of that level in sequence
+      state.current = 0;
+      state.answers = [];
+      renderQuestion();
+      updateProgress();
+    }
+
+    function renderQuestion(){
+      const q = state.filtered[state.current];
+      if(!q){ questionText.textContent = 'No more questions in this level.'; optionsDiv.innerHTML=''; return; }
+      questionText.textContent = (state.current+1)+'. '+ q.q;
+      // show video if hard question has video flag
+      if(q.level==='hard' && q.video){ videoContainer.style.display='block'; qVideo.currentTime=0; qVideo.play().catch(()=>{});} else { videoContainer.style.display='none'; qVideo.pause(); }
+
+      optionsDiv.innerHTML = '';
+      q.opts.forEach((opt,i)=>{
+        const but = document.createElement('button');
+        but.className='opt'; but.innerText = opt; but.dataset.index = i;
+        but.addEventListener('click',()=>selectOption(but,i));
+        optionsDiv.appendChild(but);
+      });
+      qIndex.textContent = questions.findIndex(x=>x.id===q.id)+1; // global index
+    }
+
+    function selectOption(el,i){
+      // deselect others
+      document.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+      el.classList.add('selected');
+      beep(0.04,700,0.06);
+      // save answer in local state
+      state.answers[state.current] = i;
+    }
+
+    nextBtn.addEventListener('click',()=>{
+      const q = state.filtered[state.current];
+      const selected = state.answers[state.current];
+      if(selected===undefined){ alert('Please choose an option first.'); return; }
+      // check
+      if(selected === q.ans){ state.score += 5; scoreEl.textContent = state.score; }
+      // move to next question in same level or finish
+      state.current++;
+      if(state.current >= state.filtered.length){
+        alert('You finished this level. Your score: '+state.score);
+        // switch to next level automatically
+      }
+      renderQuestion(); updateProgress();
+    });
+
+    showAnswerBtn.addEventListener('click',()=>{
+      const q = state.filtered[state.current];
+      if(!q) return;
+      const right = q.opts[q.ans];
+      alert('Correct answer: '+ right);
+    });
+
+    // level buttons
+    levelBtns.forEach(b=>b.addEventListener('click', ()=>{
+      levelBtns.forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      state.level = b.dataset.level;
+      levelName.textContent = b.dataset.level.charAt(0).toUpperCase()+b.dataset.level.slice(1);
+      filterQuestions();
+    }));
+
+    document.getElementById('restartBtn').addEventListener('click',()=>{
+      state.score=0;scoreEl.textContent=0;filterQuestions();
+    });
+
+    // create downloadable HTML (simple)
+    document.getElementById('downloadBtn').addEventListener('click',()=>{
+      const blob = new Blob([document.documentElement.outerHTML],{type:'text/html'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='quiz_describing_people.html'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    function updateProgress(){
+      const globalIndex = questions.findIndex(q=>q.id===state.filtered[state.current]?.id);
+      const percent = ((globalIndex+1)/questions.length)*100 || 0;
+      progress.style.width = percent+'%';
+    }
+
+    // initialize default
+    filterQuestions();
+
+  </script>
+</body>
+</html>
