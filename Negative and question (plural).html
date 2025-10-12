@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professions, Hobbies & Activities Game</title>
+<style>
+body {
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #a8edea, #fed6e3);
+  text-align: center;
+  color: #333;
+}
+#game-container {
+  max-width: 700px;
+  margin: 30px auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  padding: 30px;
+}
+.avatar {
+  width: 100px;
+  border-radius: 50%;
+}
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  margin: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button:hover { background-color: #45a049; }
+.option {
+  display: block;
+  background: #f3f3f3;
+  margin: 8px auto;
+  width: 90%;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.option:hover { background: #c8f7c5; }
+.correct { background-color: #9bff9b !important; }
+.wrong { background-color: #ffb3b3 !important; }
+#score {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+<audio id="bg-music" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_f868aa1b37.mp3?filename=happy-bells-12609.mp3" loop></audio>
+<audio id="correct-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7f9b3c4bdb.mp3?filename=correct-answer-3-81183.mp3"></audio>
+<audio id="wrong-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_47ff54e445.mp3?filename=error-2-126514.mp3"></audio>
+
+<div id="game-container">
+  <img src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png" class="avatar">
+  <h2>Professions, Hobbies, and Activities Game 🎮</h2>
+  <div id="question-container"></div>
+  <div id="options-container"></div>
+  <div id="score"></div>
+  <button id="next-btn">Next ➡️</button>
+</div>
+
+<script>
+const bgMusic = document.getElementById("bg-music");
+bgMusic.volume = 0.2;
+bgMusic.play();
+
+const correctSound = document.getElementById("correct-sound");
+const wrongSound = document.getElementById("wrong-sound");
+
+const questions = [
+  {q: "They ___ doctors.", opts:["is","are","am","be"], ans:"are"},
+  {q: "She ___ not a teacher.", opts:["is","are","am","isn't"], ans:"isn't"},
+  {q: "Are you students?", opts:["Yes, we are","No, she isn’t","Yes, he is","No, I am"], ans:"Yes, we are"},
+  {q: "He ___ a pilot.", opts:["are","is","am","be"], ans:"is"},
+  {q: "We ___ not farmers.", opts:["is","are","aren’t","isn’t"], ans:"aren’t"},
+  {q: "Judy and Sam ___ singers.", opts:["is","are","am","was"], ans:"are"},
+  {q: "I ___ a student.", opts:["is","are","am","be"], ans:"am"},
+  {q: "You ___ a nurse.", opts:["is","are","am","was"], ans:"are"},
+  {q: "Is he a policeman?", opts:["Yes, he is","No, they aren’t","Yes, you are","No, she is"], ans:"Yes, he is"},
+  {q: "Are they engineers?", opts:["Yes, they are","No, he isn’t","Yes, she is","No, you are"], ans:"Yes, they are"},
+  {q: "She ___ not a doctor.", opts:["is","are","isn’t","am"], ans:"isn’t"},
+  {q: "We ___ dancers.", opts:["is","are","am","be"], ans:"are"},
+  {q: "Is Anna a cook?", opts:["Yes, she is","No, they aren’t","Yes, we are","No, he is"], ans:"Yes, she is"},
+  {q: "They ___ not teachers.", opts:["is","are","isn’t","aren’t"], ans:"aren’t"},
+  {q: "Are you musicians?", opts:["Yes, we are","No, he isn’t","Yes, she is","No, I am"], ans:"Yes, we are"},
+  {q: "He ___ not a driver.", opts:["is","isn’t","are","am"], ans:"isn’t"},
+  {q: "We ___ happy students.", opts:["are","is","am","be"], ans:"are"},
+  {q: "Is she a singer?", opts:["Yes, she is","No, they aren’t","Yes, I am","No, he is"], ans:"Yes, she is"},
+  {q: "They ___ good friends.", opts:["is","are","am","was"], ans:"are"},
+  {q: "You ___ not late.", opts:["is","are","am","aren’t"], ans:"aren’t"},
+];
+
+let current = 0;
+let score = 0;
+
+function showQuestion() {
+  const qContainer = document.getElementById("question-container");
+  const oContainer = document.getElementById("options-container");
+  qContainer.innerHTML = `<h3>${questions[current].q}</h3>`;
+  oContainer.innerHTML = "";
+  questions[current].opts.forEach(opt=>{
+    const btn = document.createElement("div");
+    btn.classList.add("option");
+    btn.textContent = opt;
+    btn.onclick = ()=>checkAnswer(btn, opt);
+    oContainer.appendChild(btn);
+  });
+  document.getElementById("score").textContent = `Score: ${score}/${questions.length}`;
+}
+
+function checkAnswer(btn, selected) {
+  const correct = questions[current].ans;
+  const options = document.querySelectorAll(".option");
+  options.forEach(o=>o.onclick=null);
+  if(selected===correct){
+    btn.classList.add("correct");
+    correctSound.play();
+    score++;
+  } else {
+    btn.classList.add("wrong");
+    wrongSound.play();
+  }
+  document.getElementById("score").textContent = `Score: ${score}/${questions.length}`;
+}
+
+document.getElementById("next-btn").onclick = ()=>{
+  current++;
+  if(current<questions.length){
+    showQuestion();
+  } else {
+    document.getElementById("question-container").innerHTML = "<h2>🎉 You Finished the Game!</h2>";
+    document.getElementById("options-container").innerHTML = "";
+    document.getElementById("next-btn").style.display = "none";
+  }
+};
+
+showQuestion();
+</script>
+</body>
+</html>
