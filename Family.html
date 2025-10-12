@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz: Introducing Family Members & Possessive Adjectives (Grade 7)</title>
+  <style>
+    :root{--bg:#f4f7fb;--card:#ffffff;--accent:#2a9df4;--text:#243048}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; background:var(--bg); color:var(--text); margin:0;padding:28px}
+    .wrap{max-width:980px;margin:0 auto}
+    header{display:flex;gap:12px;align-items:center}
+    h1{margin:.2rem 0;font-size:1.4rem}
+    p.lead{margin:0;color:#51607a}
+    .card{background:var(--card);border-radius:12px;padding:18px;margin-top:18px;box-shadow:0 6px 24px rgba(36,48,72,0.06)}
+    .question{margin:12px 0;padding:12px;border-radius:8px}
+    .q-title{font-weight:600}
+    .options{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    button.opt{padding:8px 12px;border-radius:8px;border:1px solid #e6eefb;background:transparent;cursor:pointer}
+    button.opt.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .col{flex:1;min-width:220px}
+    .img-preview{width:120px;height:120px;border-radius:10px;border:1px dashed #d7e6fb;display:flex;align-items:center;justify-content:center}
+    .small{font-size:.9rem;color:#445668}
+    input[type=text]{width:100%;padding:8px;border-radius:8px;border:1px solid #dfe9f7}
+    select{width:100%;padding:8px;border-radius:8px;border:1px solid #dfe9f7}
+    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+    .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
+    .result{padding:12px;border-radius:8px;margin-top:14px}
+    .correct{background:#e6fff2;color:#0b6b3a}
+    .wrong{background:#fff0f1;color:#8b1c2d}
+    /* matching grid */
+    .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .match-left{display:flex;flex-direction:column;gap:10px}
+    .match-right{display:flex;flex-direction:column;gap:10px}
+    /* simple responsive */
+    @media (max-width:760px){.row{flex-direction:column}}
+    /* SVG icon styles */
+    .person-svg{width:96px;height:96px}
+    .hint{font-size:.85rem;color:#6b7b8f}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <rect width="24" height="24" rx="6" fill="#2a9df4"/>
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zM4 20c0-3.31 2.69-6 6-6h4c3.31 0 6 2.69 6 6v1H4v-1z" fill="#fff"/>
+      </svg>
+      <div>
+        <h1>Quiz: Introducing Family Members & Possessive Adjectives (Grade 7)</h1>
+        <p class="lead">30 questions — multiple choice, matching, fill-in, and mini-games. Click <strong>Submit</strong> to check answers. Images are inline illustrations to help students.</p>
+      </div>
+    </header>
+
+    <div class="card" id="quiz">
+      <!-- 1-15 Multiple Choice with images -->
+      <h2 style="margin-top:0">Part A — Multiple Choice (15 questions)</h2>
+
+      <!-- Questions 1-5 -->
+      <div class="question" data-q="1">
+        <div class="row">
+          <div class="col">
+            <div class="q-title">1. My mother’s father is my _______.</div>
+            <div class="options">
+              <button class="opt" data-value="a">a) uncle</button>
+              <button class="opt" data-value="b">b) brother</button>
+              <button class="opt" data-value="c">c) grandfather</button>
+              <button class="opt" data-value="d">d) cousin</button>
+            </div>
+          </div>
+          <div class="col" style="display:flex;align-items:center;justify-content:center">
+            <!-- simple SVG image: grandfather -->
+            <figure class="img-preview" title="grandfather">
+              <svg class="person-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="18" r="10" fill="#ffd1a9" />
+                <rect x="12" y="30" width="40" height="26" rx="6" fill="#bcdffb" />
+                <path d="M22 36c2 4 6 6 10 6s8-2 10-6" stroke="#6b6b6b" stroke-width="2" fill="none" />
+              </svg>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <div class="question" data-q="2">
+        <div class="row">
+          <div class="col">
+            <div class="q-title">2. Sarah is my father’s daughter. She is my _______.</div>
+            <div class="options">
+              <button class="opt" data-value="a">a) aunt</button>
+              <button class="opt" data-value="b">b) sister</button>
+              <button class="opt" data-value="c">c) cousin</button>
+              <button class="opt" data-value="d">d) mother</button>
+            </div>
+          </div>
+          <div class="col" style="display:flex;align-items:center;justify-content:center">
+            <figure class="img-preview" title="sister">
+              <svg class="person-svg" viewBox="0 0 64 64"><circle cx="32" cy="18" r="10" fill="#ffe4f0"/><rect x="16" y="32" width="32" height="20" rx="6" fill="#ffd1d9"/></svg>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <div class="question" data-q="3">
+        <div class="row">
+          <div class="col">
+            <div class="q-title">3. My father is married to my _______.</div>
+            <div class="options">
+              <button class="opt" data-value="a">a) aunt</button>
+              <button class="opt" data-value="b">b) mother</button>
+              <button class="opt" data-value="c">c) grandmother</button>
+              <button class="opt" data-value="d">d) cousin</button>
+            </div>
+          </div>
+          <div class="col" style="display:flex;align-items:center;justify-content:center">
+            <figure class="img-preview" title="mother">
+              <svg class="person-svg" viewBox="0 0 64 64"><circle cx="32" cy="16" r="10" fill="#ffd9b3"/><rect x="14" y="30" width="36" height="26" rx="6" fill="#fbe7c6"/></svg>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <div class="question" data-q="4">
+        <div class="row">
+          <div class="col">
+            <div class="q-title">4. They are my parents. I am _______ son.</div>
+            <div class="options">
+              <button class="opt" data-value="a">a) their</button>
+              <button class="opt" data-value="b">b) his</button>
+              <button class="opt" data-value="c">c) her</button>
+              <button class="opt" data-value="d">d) your</button>
+            </div>
+          </div>
+          <div class="col" style="display:flex;align-items:center;justify-content:center">
+            <figure class="img-preview" title="family">
+              <svg class="person-svg" viewBox="0 0 64 64"><circle cx="20" cy="14" r="8" fill="#ffd1a9"/><circle cx="44" cy="14" r="8" fill="#ffe4f0"/><rect x="10" y="30" width="44" height="24" rx="6" fill="#d3f0ff"/></svg>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <div class="question" data-q="5">
+        <div class="row">
+          <div class="col">
+            <div class="q-title">5. This is my brother. _______ name is Rudi.</div>
+            <div class="options">
+              <button class="opt" data-value="a">a) My</button>
+              <button class="opt" data-value="b">b) His</button>
+              <button class="opt" data-value="c">c) Her</button>
+              <button class="opt" data-value="d">d) Their</button>
+            </div>
+          </div>
+          <div class="col" style="display:flex;align-items:center;justify-content:center">
+            <figure class="img-preview" title="brother">
+              <svg class="person-svg" viewBox="0 0 64 64"><circle cx="32" cy="16" r="8" fill="#cfe8ff"/><rect x="18" y="30" width="28" height="22" rx="6" fill="#bfe0ff"/></svg>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions 6-10 -->
+      <div class="question" data-q="6">
+        <div class="q-title">6. Mr. Budi has a daughter. _______ name is Rina.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) His</button>
+          <button class="opt" data-value="b">b) Her</button>
+          <button class="opt" data-value="c">c) Their</button>
+          <button class="opt" data-value="d">d) Our</button>
+        </div>
+      </div>
+
+      <div class="question" data-q="7">
+        <div class="q-title">7. My grandparents have a big house. _______ house is beautiful.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) Their</button>
+          <button class="opt" data-value="b">b) Our</button>
+          <button class="opt" data-value="c">c) His</button>
+          <button class="opt" data-value="d">d) Her</button>
+        </div>
+      </div>
+
+      <div class="question" data-q="8">
+        <div class="q-title">8. I have a pet cat. _______ name is Miko.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) His</button>
+          <button class="opt" data-value="b">b) Its</button>
+          <button class="opt" data-value="c">c) Their</button>
+          <button class="opt" data-value="d">d) Our</button>
+        </div>
+      </div>
+
+      <div class="question" data-q="9">
+        <div class="q-title">9. My father is a teacher. _______ teaches at a junior high school.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) He</button>
+          <button class="opt" data-value="b">b) She</button>
+          <button class="opt" data-value="c">c) His</button>
+          <button class="opt" data-value="d">d) They</button>
+        </div>
+      </div>
+
+      <div class="question" data-q="10">
+        <div class="q-title">10. My aunt and uncle have two children. They are my _______.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) parents</button>
+          <button class="opt" data-value="b">b) cousins</button>
+          <button class="opt" data-value="c">c) sisters</button>
+          <button class="opt" data-value="d">d) friends</button>
+        </div>
+      </div>
+
+      <!-- 11-15 -->
+      <div class="question" data-q="11">
+        <div class="q-title">11. This is my sister, Lila. _______ hobby is reading.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) His</button>
+          <button class="opt" data-value="b">b) Her</button>
+          <button class="opt" data-value="c">c) Their</button>
+          <button class="opt" data-value="d">d) Its</button>
+        </div>
+      </div>
+
+      <div class="question" data-q="12">
+        <div class="q-title">12. Our parents love us very much. We love _______ too.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) his</button>
+          <button class="opt" data-value="b">b) her</button>
+          <button class="opt" data-value="c">c) them</button>
+          <button class="opt" data-value="d">d) they</button>
+        </div>
+      </div>
+
+      <div class="question" data-q="13">
+        <div class="q-title">13. Is that your father? Yes, that’s _______ car.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) her</button>
+          <button class="opt" data-value="b">b) his</button>
+          <button class="opt" data-value="c">c) your</button>
+          <button class="opt" data-value="d">d) their</button>
+        </div>
+      </div>
+
+      <div class="question" data-q="14">
+        <div class="q-title">14. My mother and I are cooking. _______ favorite food is fried rice.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) Our</button>
+          <button class="opt" data-value="b">b) His</button>
+          <button class="opt" data-value="c">c) Her</button>
+          <button class="opt" data-value="d">d) Their</button>
+        </div>
+      </div>
+
+      <div class="question" data-q="15">
+        <div class="q-title">15. My uncle has a son. _______ name is Andi.</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) His</button>
+          <button class="opt" data-value="b">b) Her</button>
+          <button class="opt" data-value="c">c) Their</button>
+          <button class="opt" data-value="d">d) Our</button>
+        </div>
+      </div>
+
+      <!-- Part B Matching -->
+      <h2>Part B — Matching (5 questions)</h2>
+      <p class="small">Choose the correct meaning for each family member.</p>
+      <div class="card">
+        <div class="match-grid">
+          <div class="match-left">
+            <label>16. Aunt <select data-q="16"><option value="">--choose--</option><option value="a">a) The son of your uncle or aunt</option><option value="b">b) The sister of your mother or father</option><option value="c">c) The daughter of your brother or sister</option><option value="d">d) The son of your brother or sister</option><option value="e">e) The brother of your mother or father</option></select></label>
+            <label>17. Cousin <select data-q="17"><option value="">--choose--</option><option value="a">a) The son of your uncle or aunt</option><option value="b">b) The sister of your mother or father</option><option value="c">c) The daughter of your brother or sister</option><option value="d">d) The son of your brother or sister</option><option value="e">e) The brother of your mother or father</option></select></label>
+            <label>18. Nephew <select data-q="18"><option value="">--choose--</option><option value="a">a) The son of your uncle or aunt</option><option value="b">b) The sister of your mother or father</option><option value="c">c) The daughter of your brother or sister</option><option value="d">d) The son of your brother or sister</option><option value="e">e) The brother of your mother or father</option></select></label>
+            <label>19. Niece <select data-q="19"><option value="">--choose--</option><option value="a">a) The son of your uncle or aunt</option><option value="b">b) The sister of your mother or father</option><option value="c">c) The daughter of your brother or sister</option><option value="d">d) The son of your brother or sister</option><option value="e">e) The brother of your mother or father</option></select></label>
+            <label>20. Uncle <select data-q="20"><option value="">--choose--</option><option value="a">a) The son of your uncle or aunt</option><option value="b">b) The sister of your mother or father</option><option value="c">c) The daughter of your brother or sister</option><option value="d">d) The son of your brother or sister</option><option value="e">e) The brother of your mother or father</option></select></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Part C Fill in the blanks -->
+      <h2>Part C — Fill in the blanks (5 questions)</h2>
+      <div class="question" data-q="21">
+        <div class="q-title">21. That is my brother. _______ name is Dimas.</div>
+        <input type="text" data-q="21-input" placeholder="Type the correct possessive adjective" />
+      </div>
+
+      <div class="question" data-q="22">
+        <div class="q-title">22. My mother loves me. I love _______ too.</div>
+        <input type="text" data-q="22-input" placeholder="Type the correct word" />
+      </div>
+
+      <div class="question" data-q="23">
+        <div class="q-title">23. They are my parents. _______ house is very cozy.</div>
+        <input type="text" data-q="23-input" placeholder="Type the correct possessive adjective" />
+      </div>
+
+      <div class="question" data-q="24">
+        <div class="q-title">24. The baby is cute. _______ eyes are big.</div>
+        <input type="text" data-q="24-input" placeholder="Type the correct possessive adjective" />
+      </div>
+
+      <div class="question" data-q="25">
+        <div class="q-title">25. I have a sister. _______ favorite color is pink.</div>
+        <input type="text" data-q="25-input" placeholder="Type the correct possessive adjective" />
+      </div>
+
+      <!-- Part D Game-style mini activities (5) -->
+      <h2>Part D — Mini-games & puzzles (5 activities)</h2>
+      <div class="question" data-q="26">
+        <div class="q-title">26. Who Am I? (Type your answer)</div>
+        <div class="small hint">Clue: I am your father’s sister.</div>
+        <input type="text" data-q="26-input" placeholder="Write your answer (e.g. aunt)" />
+      </div>
+
+      <div class="question" data-q="27">
+        <div class="q-title">27. Guess the Relationship</div>
+        <div class="small">If Rani is Lina's mother, and Lina is Budi's sister, who is Rani to Budi?</div>
+        <input type="text" data-q="27-input" placeholder="Answer (e.g. mother)" />
+      </div>
+
+      <div class="question" data-q="28">
+        <div class="q-title">28. Possessive Puzzle (choose correct)</div>
+        <div class="options">
+          <button class="opt" data-value="a">a) He name is John.</button>
+          <button class="opt" data-value="b">b) His name is John.</button>
+          <button class="opt" data-value="c">c) Him name is John.</button>
+          <button class="opt" data-value="d">d) He's name John.</button>
+        </div>
+      </div>
+
+      <div class="question" data-q="29">
+        <div class="q-title">29. Find the Mistake</div>
+        <div class="small">"This is my father. Her name is Andi." Which word is wrong?</div>
+        <input type="text" data-q="29-input" placeholder="Type the wrong word" />
+      </div>
+
+      <div class="question" data-q="30">
+        <div class="q-title">30. Family Word Hunt (type five family words separated by commas)</div>
+        <div class="small hint">Find these five words in your head: father, mother, sister, brother, cousin</div>
+        <input type="text" data-q="30-input" placeholder="e.g. father, mother, sister, brother, cousin" />
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="checkBtn">Submit & Check Answers</button>
+        <button class="btn" id="resetBtn" style="background:#fff;color:var(--accent);border:1px solid var(--accent)">Reset</button>
+      </div>
+
+      <div id="resultArea"></div>
+
+    </div>
+  </div>
+
+  <script>
+    // Answer key
+    const answers = {
+      1: 'c',2: 'b',3: 'b',4: 'a',5: 'b',6: 'a',7: 'a',8: 'b',9: 'a',10: 'b',11: 'b',12: 'c',13: 'b',14: 'a',15: 'a',
+      16: 'b',17: 'a',18: 'd',19: 'c',20: 'e',
+      21: 'his',22: 'her',23: 'their',24: 'its',25: 'her',
+      26: 'aunt',27: 'mother',28: 'b',29: 'Her',30: 'father,mother,sister,brother,cousin'
+    };
+
+    // option selection
+    document.querySelectorAll('.opt').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        // toggle selection for that question container
+        const q = btn.closest('.question')?.dataset.q;
+        if(q && +q <= 30){
+          // if inside multiple choice area, ensure single select per question
+          if(+q >=1 && +q <=15 || +q===28){
+            // remove selected siblings
+            btn.parentElement.querySelectorAll('.opt').forEach(b=>b.classList.remove('selected'));
+            btn.classList.add('selected');
+            btn.setAttribute('data-chosen','true');
+          } else {
+            // other behavior if needed
+            btn.classList.toggle('selected');
+          }
+        }
+      });
+    });
+
+    function getMCAnswer(qNum){
+      const container = document.querySelector('.question[data-q="'+qNum+'"]');
+      const sel = container?.querySelector('.opt.selected');
+      return sel ? sel.getAttribute('data-value') : '';
+    }
+
+    function normalizeText(t){ return t.trim().toLowerCase(); }
+
+    function checkAll(){
+      let score = 0; let total = 30; let feedback = [];
+      // 1-15 MC
+      for(let i=1;i<=15;i++){
+        const user = getMCAnswer(i);
+        const ok = answers[i];
+        if(user==ok){ score++; feedback.push({q:i, ok:true}); }
+        else feedback.push({q:i, ok:false, user});
+      }
+      // matching 16-20 (select values are letters a-e but answers mapping use letters a-e where meaningful)
+      for(let i=16;i<=20;i++){
+        const sel = document.querySelector('[data-q="'+i+'"]')?.value;
+        if(!sel){ feedback.push({q:i, ok:false}); continue; }
+        // selected option's leading letter is like "a) ..." we stored values a..e directly
+        const chosen = sel[0];
+        if(chosen === answers[i]){ score++; feedback.push({q:i, ok:true}); }
+        else feedback.push({q:i, ok:false, chosen});
+      }
+      // fill in 21-25
+      for(let i=21;i<=25;i++){
+        const val = document.querySelector('[data-q="'+i+'-input"]')?.value || document.querySelector('[data-q="'+i+'-input"]')?.value;
+        const norm = normalizeText(val||'');
+        if(norm === normalizeText(answers[i])){ score++; feedback.push({q:i, ok:true}); }
+        else feedback.push({q:i, ok:false, val});
+      }
+      // games 26-30
+      // 26
+      const a26 = normalizeText(document.querySelector('[data-q="26-input"]')?.value||'');
+      if(a26 === answers[26]){ score++; feedback.push({q:26, ok:true}); } else feedback.push({q:26, ok:false, val:a26});
+      //27
+      const a27 = normalizeText(document.querySelector('[data-q="27-input"]')?.value||'');
+      if(a27 === answers[27]){ score++; feedback.push({q:27, ok:true}); } else feedback.push({q:27, ok:false, val:a27});
+      //28
+      const a28 = (()=>{ const sel = document.querySelector('.question[data-q="28"] .opt.selected'); return sel? sel.getAttribute('data-value'): ''; })();
+      if(a28 === answers[28]){ score++; feedback.push({q:28, ok:true}); } else feedback.push({q:28, ok:false, val:a28});
+      //29
+      const a29 = (document.querySelector('[data-q="29-input"]')?.value||'').trim();
+      if(a29.toLowerCase() === answers[29].toLowerCase()){ score++; feedback.push({q:29, ok:true}); } else feedback.push({q:29, ok:false, val:a29});
+      //30 - accept any order, but check that all five words are present
+      const a30 = (document.querySelector('[data-q="30-input"]')?.value||'').toLowerCase();
+      const required = answers[30].split(',');
+      const provided = a30.split(',').map(s=>s.trim()).filter(s=>s);
+      const ok30 = required.every(r=> provided.includes(r));
+      if(ok30){ score++; feedback.push({q:30, ok:true}); } else feedback.push({q:30, ok:false, val:provided});
+
+      // Build result display
+      const resultArea = document.getElementById('resultArea');
+      resultArea.innerHTML = '';
+      const summary = document.createElement('div');
+      summary.className = 'result';
+      summary.innerHTML = `<strong>Score: ${score} / ${total}</strong> <div class="small">Correct answers are indicated below.</div>`;
+      resultArea.appendChild(summary);
+
+      // detailed per-question feedback (only show incorrect for teacher use)
+      const details = document.createElement('div');
+      details.style.marginTop = '10px';
+      feedback.forEach(item=>{
+        const div = document.createElement('div');
+        div.style.padding='8px'; div.style.borderRadius='6px'; div.style.marginTop='6px';
+        if(item.ok){ div.className='correct'; div.innerText = `Q${item.q}: Correct.`; }
+        else {
+          div.className='wrong';
+          let exp = '';
+          // show correct answer
+          const correct = answers[item.q];
+          if(typeof correct === 'string') exp = `Correct answer: ${correct}`;
+          div.innerText = `Q${item.q}: Wrong. ${exp}`;
+        }
+        details.appendChild(div);
+      });
+      resultArea.appendChild(details);
+
+      // scroll to result
+      resultArea.scrollIntoView({behavior:'smooth'});
+    }
+
+    document.getElementById('checkBtn').addEventListener('click', checkAll);
+    document.getElementById('resetBtn').addEventListener('click', ()=> location.reload());
+
+    // small usability: allow selecting options by keyboard (space/enter)
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){ e.preventDefault(); }
+    });
+
+  </script>
+</body>
+</html>
