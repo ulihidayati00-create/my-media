@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Game Progresif: Numbers, Days, Months & Dates</title>
+  <style>
+    :root{--bg:#f0f8ff;--card:#ffffff;--accent:#2563eb;--muted:#6b7280;--success:#16a34a;--danger:#dc2626}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,Arial;color:#0f172a;background:var(--bg);margin:0;padding:0}
+    header{background:linear-gradient(90deg,#2563eb,#3b82f6);color:white;padding:18px 16px;display:flex;align-items:center;gap:12px}
+    header img.logo{width:64px;height:64px;border-radius:50%;border:3px solid rgba(255,255,255,0.18)}
+    header .title{flex:1}
+    header h1{margin:0;font-size:20px}
+    header p{margin:2px 0 0;font-size:13px;opacity:.95}
+    .wrap{max-width:980px;margin:20px auto;padding:16px}
+    .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 8px 30px rgba(2,6,23,0.06);margin-bottom:14px}
+    .avatars{display:flex;gap:12px;justify-content:center}
+    .avatar{width:92px;text-align:center;cursor:pointer}
+    .avatar img{width:92px;height:92px;border-radius:50%;border:3px solid transparent;transition:transform .18s,box-shadow .18s}
+    .avatar:hover img{transform:translateY(-6px)}
+    .avatar.selected img{box-shadow:0 8px 20px rgba(37,99,235,0.18);border-color:#fff}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+    button{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+    button.secondary{background:#e6eefb;color:#0f172a}
+    .level-indicator{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+    .level-pill{padding:8px 12px;border-radius:999px;background:#eef2ff;color:#1e3a8a;font-weight:700}
+    .question{font-weight:700;margin-bottom:8px}
+    .options{display:flex;flex-direction:column;gap:8px}
+    .option{background:#f8fafc;padding:10px;border-radius:8px;cursor:pointer;border:1px solid transparent}
+    .option:hover{background:#eef2ff}
+    .option.selected{border-color:var(--accent);background:#e6f0ff}
+    input[type=text]{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6}
+    .result{padding:12px;border-radius:8px;text-align:center;margin-top:12px}
+    .success{background:#ecfdf5;color:var(--success);font-weight:700}
+    .fail{background:#fff1f2;color:var(--danger);font-weight:700}
+    .small{font-size:13px;color:var(--muted)}
+    .confetti-canvas{pointer-events:none;position:fixed;left:0;top:0;width:100%;height:100%;z-index:9999}
+    footer{text-align:center;color:var(--muted);font-size:13px;margin:18px 0}
+  </style>
+</head>
+<body>
+  <header>
+    <img class="logo" src="https://cdn-icons-png.flaticon.com/512/1864/1864525.png" alt="logo">
+    <div class="title">
+      <h1>Game Progresif: Numbers, Days, Months & Dates</h1>
+      <p>Level: Easy → Medium → Hard • Topic: Numbers, Days, Months, Dates • Dengan efek suara dan confetti</p>
+    </div>
+    <div style="text-align:right">
+      <div class="small">MTs Darul Falah • RPP Generator</div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="card" id="avatarCard">
+      <h3>Pilih Avatarmu</h3>
+      <div class="avatars">
+        <div class="avatar" data-id="Alex" onclick="pickAvatar(this)">
+          <img src="https://cdn-icons-png.flaticon.com/512/921/921071.png" alt="Alex">
+          <div class="small">Alex</div>
+        </div>
+        <div class="avatar" data-id="Emma" onclick="pickAvatar(this)">
+          <img src="https://cdn-icons-png.flaticon.com/512/1998/1998671.png" alt="Emma">
+          <div class="small">Emma</div>
+        </div>
+        <div class="avatar" data-id="Rafi" onclick="pickAvatar(this)">
+          <img src="https://cdn-icons-png.flaticon.com/512/4333/4333609.png" alt="Rafi">
+          <div class="small">Rafi</div>
+        </div>
+      </div>
+      <div class="controls">
+        <button onclick="startGame()">Mulai Game</button>
+        <button class="secondary" onclick="showInstructions()">Instruksi</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="gameCard">
+      <div class="level-indicator" id="levelPills"></div>
+      <div id="questionArea"></div>
+      <div class="controls" id="controlBtns">
+        <button id="nextBtn" onclick="nextQuestion()">Next</button>
+        <button class="secondary" onclick="pauseResume()" id="pauseBtn">Pause</button>
+      </div>
+      <div id="levelResult"></div>
+    </div>
+
+    <div class="card hidden" id="finalCard">
+      <h3>Selamat!</h3>
+      <div id="finalMessage" class="result success"></div>
+      <div class="small" style="margin-top:8px">Kamu bisa mengulang game untuk memperbaiki skor.</div>
+      <div class="controls" style="margin-top:12px">
+        <button onclick="restartGame()">Main Lagi</button>
+        <button class="secondary" onclick="downloadReport()">Unduh Laporan</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+  <footer>© 2025 Game Asesmen • Fun & Love-Based Learning</footer>
+
+  <script>
+    // --- Audio using Web Audio API (no external files) ---
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioCtx();
+    function playDing(){
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type='sine'; o.frequency.value=880;
+      g.gain.value=0.0001;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); g.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+      o.stop(audioCtx.currentTime + 0.6);
+    }
+    function playBuzz(){
+      const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+      o.type='square'; o.frequency.value=220; g.gain.value=0.0001;
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); g.gain.exponentialRampToValueAtTime(0.15, audioCtx.currentTime + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.6);
+      o.stop(audioCtx.currentTime + 0.7);
+    }
+    function playVictory(){
+      const notes=[523,659,784,1047]; // C5,E5,G5,C6 arpeggio
+      let t=0;
+      notes.forEach((n,i)=>{
+        const o=audioCtx.createOscillator(); const g=audioCtx.createGain();
+        o.type='sine'; o.frequency.value=n; g.gain.value=0.0001;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(audioCtx.currentTime + t);
+        g.gain.exponentialRampToValueAtTime(0.18, audioCtx.currentTime + t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + t + 0.28);
+        o.stop(audioCtx.currentTime + t + 0.3);
+        t += 0.18;
+      });
+    }
+
+    // --- Confetti ---
+    const confettiCanvas = document.getElementById('confettiCanvas');
+    const ctx = confettiCanvas.getContext('2d');
+    let confettiPieces = [];
+    function resizeCanvas(){confettiCanvas.width = window.innerWidth; confettiCanvas.height = window.innerHeight}
+    window.addEventListener('resize', resizeCanvas); resizeCanvas();
+    function spawnConfetti(){
+      confettiPieces = []; for(let i=0;i<150;i++){confettiPieces.push({x:Math.random()*confettiCanvas.width,y:Math.random()*-confettiCanvas.height,z:Math.random()*20+5,dx:Math.random()*2-1,dy:Math.random()*3+2,color:['#f97316','#f43f5e','#06b6d4','#a78bfa','#34d399'][Math.floor(Math.random()*5)],rot:Math.random()*360,rotSpeed:Math.random()*6-3})}
+      requestAnimationFrame(updateConfetti);
+      setTimeout(()=>{confettiPieces = []},3500);
+    }
+    function updateConfetti(){
+      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      confettiPieces.forEach(p=>{
+        p.x+=p.dx; p.y+=p.dy; p.rot+=p.rotSpeed; p.dy+=0.02; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle=p.color; ctx.fillRect(-p.z/3,-p.z/3,p.z, p.z/1.6); ctx.restore();
+      });
+      if(confettiPieces.length) requestAnimationFrame(updateConfetti);
+    }
+
+    // --- Game data (20 questions: 7 easy MC, 7 medium short, 6 hard mixed) ---
+    const levels = [
+      {name:'Easy', qty:7, type:'mc', passRate:0.7, questions:[
+        {q:'How do you write the number 47 in words?', opts:['forty seven','fourty seven','forty-seven','fourty-seven'], a:[0,2]},
+        {q:'What day comes after Wednesday?', opts:['Tuesday','Thursday','Friday','Sunday'], a:[1]},
+        {q:'What is the first month of the year?', opts:['December','January','March','June'], a:[1]},
+        {q:'What number comes before 100?', opts:['99','101','98','100'], a:[0]},
+        {q:'How many days are there in a week?', opts:['5','6','7','8'], a:[2]},
+        {q:'Which is the 3rd day of the week if Monday is first?', opts:['Wednesday','Tuesday','Thursday','Sunday'], a:[0]},
+        {q:'What month is number 12?', opts:['October','November','December','September'], a:[2]}
+      ]},
+      {name:'Medium', qty:7, type:'short', passRate:0.7, questions:[
+        {q:'Write the ordinal form: 21 →', a:['twenty-first','twenty first']},
+        {q:'What month is number 10? →', a:['october']},
+        {q:'What day is after Sunday? →', a:['monday']},
+        {q:'Write the number for "sixty-five" →', a:['65','sixty five','sixty-five']},
+        {q:'What is the last month of the year? →', a:['december']},
+        {q:'Write the ordinal for 1 →', a:['first']},
+        {q:'Write the cardinal number for "twenty" →', a:['20','twenty']}
+      ]},
+      {name:'Hard', qty:6, type:'mixed', passRate:0.7, questions:[
+        {q:'Convert to words: 15 →', a:['fifteen']},
+        {q:'Write the date in words (day/month/year): 05/12/2025 →', a:['fifth december two thousand twenty-five','fifth of december two thousand twenty-five','5 december 2025']},
+        {q:'Fill the blank: "My birthday is on _____ 10th." (fill with month name) →', a:['july']},
+        {q:'Make a short sentence: Use ordinal + month (e.g., "My exam is on the third of March.") →', a:['sentence']},
+        {q:'Which day is commonly the second day of the workweek? (answer with day) →', a:['tuesday']},
+        {q:'Write ordinal: 31 →', a:['thirty-first','thirty first']}
+      ]}
+    ];
+
+    // --- State ---
+    let avatar='Player'; let currentLevel=0; let qIndex=0; let scoreInLevel=0; let answersLog=[]; let paused=false;
+
+    function pickAvatar(el){document.querySelectorAll('.avatar').forEach(a=>a.classList.remove('selected')); el.classList.add('selected'); avatar = el.dataset.id;}
+
+    function showInstructions(){alert('Game progresif: mulai dari Level Easy → Medium → Hard. Jawab minimal 70% benar tiap level untuk lanjut. Efek suara aktif. Good luck!');}
+
+    function startGame(){if(audioCtx.state==='suspended') audioCtx.resume(); document.getElementById('avatarCard').classList.add('hidden'); document.getElementById('gameCard').classList.remove('hidden'); currentLevel=0; qIndex=0; scoreInLevel=0; answersLog=[]; renderLevel();}
+
+    function renderLevel(){
+      const level = levels[currentLevel];
+      document.getElementById('levelPills').innerHTML = levels.map((lv,i)=>`<div class="level-pill" style="background:${i===currentLevel?'#dbeafe':'#eef2ff'}">${i===currentLevel? '▶ ' : ''}${lv.name}</div>`).join('');
+      qIndex = 0; scoreInLevel = 0; answersLog.push({level:level.name, answers:[]});
+      renderQuestion();
+    }
+
+    function renderQuestion(){
+      if(paused) return;
+      const level = levels[currentLevel];
+      const q = level.questions[qIndex];
+      const area = document.getElementById('questionArea');
+      area.innerHTML = '';
+      const title = document.createElement('div'); title.className='question'; title.textContent = `${level.name} — Question ${qIndex+1} of ${level.qty}`;
+      const para = document.createElement('div'); para.style.marginBottom='10px'; para.textContent = q.q;
+      area.appendChild(title); area.appendChild(para);
+
+      if(level.type === 'mc'){
+        const opts = document.createElement('div'); opts.className='options';
+        q.opts.forEach((opt,i)=>{
+          const o = document.createElement('div'); o.className='option'; o.textContent = opt; o.onclick = ()=>selectOption(i);
+          opts.appendChild(o);
+        });
+        area.appendChild(opts);
+      } else if(level.type === 'short'){
+        const input = document.createElement('input'); input.type='text'; input.id='textAnswer'; input.placeholder='Type your short answer here...';
+        area.appendChild(input);
+      } else if(level.type === 'mixed'){
+        const input = document.createElement('input'); input.type='text'; input.id='textAnswer'; input.placeholder='Type your answer here...';
+        area.appendChild(input);
+      }
+    }
+
+    function selectOption(optIndex){
+      const level = levels[currentLevel]; const q = level.questions[qIndex];
+      const correct = q.a.includes(optIndex);
+      if(correct){scoreInLevel++; playDing(); showFeedback(true);} else {playBuzz(); showFeedback(false);}
+      answersLog[answersLog.length-1].answers.push({question:q.q, given:q.opts[optIndex], correct: q.opts[q.a[0]]});
+      nextAfterAnswer();
+    }
+
+    function submitTextAnswer(){
+      const input = document.getElementById('textAnswer'); if(!input) return;
+      const val = input.value.trim().toLowerCase(); const q = levels[currentLevel].questions[qIndex];
+      // Accept if any acceptable answer substring matches
+      let ok = q.a.some(acc => val === acc.toLowerCase() || val.includes(acc.toLowerCase()));
+      // special for 'sentence' expected: accept if at least contains ordinal or month
+      if(q.a.includes('sentence')){
+        const hasOrdinal = /\b(first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth|thirteenth|fourteenth|fifteenth|sixteenth|seventeenth|eighteenth|nineteenth|twentieth|twenty-first|thirty-first)\b/.test(val);
+        const hasMonth = /january|february|march|april|may|june|july|august|september|october|november|december/.test(val);
+        ok = hasOrdinal && hasMonth;
+      }
+      if(ok){scoreInLevel++; playDing(); showFeedback(true);} else {playBuzz(); showFeedback(false);} 
+      answersLog[answersLog.length-1].answers.push({question:q.q, given:val, correct:q.a.join(' / ')});
+      nextAfterAnswer();
+    }
+
+    function nextAfterAnswer(){
+      // briefly disable controls, then go to next
+      document.getElementById('nextBtn').disabled = true;
+      setTimeout(()=>{document.getElementById('nextBtn').disabled=false; nextQuestion();},700);
+    }
+
+    function nextQuestion(){
+      const level = levels[currentLevel];
+      // if current question hasn't been answered for mc/short, for short we take input as submission
+      // For mc selection handled by selectOption; for short, require pressing Next to submit
+      if(level.type !== 'mc'){
+        // if text exists, auto submit
+        const input = document.getElementById('textAnswer');
+        if(input){
+          if(input.value.trim()===''){alert('Please type your answer before moving on.'); return;} else {submitTextAnswer(); return;}
+        }
+      }
+
+      qIndex++;
+      if(qIndex < level.qty){renderQuestion();}
+      else { // level finished
+        showLevelResult();
+      }
+    }
+
+    function showFeedback(correct){
+      const area=document.getElementById('questionArea');
+      const fb = document.createElement('div'); fb.style.marginTop='8px'; fb.style.fontWeight='700'; fb.textContent = correct? 'Correct! 🎉' : 'Wrong ✖️';
+      fb.style.color = correct? 'var(--success)':'var(--danger)'; area.appendChild(fb);
+    }
+
+    function showLevelResult(){
+      const level = levels[currentLevel];
+      const pct = Math.round(scoreInLevel/level.qty*100);
+      const passed = pct >= Math.round(level.passRate*100);
+      const resArea = document.getElementById('levelResult');
+      resArea.innerHTML = '';
+      const box = document.createElement('div'); box.className='result ' + (passed? 'success':'fail');
+      box.innerHTML = `<div style="font-weight:800">Level ${level.name} Complete</div><div class="small">Score: ${scoreInLevel}/${level.qty} (${pct}%)</div><div style="margin-top:8px">${passed? 'You passed! Moving to next level...' : 'You did not reach the passing score. Try again or retry the level.'}</div>`;
+      resArea.appendChild(box);
+      if(passed){
+        playVictory(); spawnConfetti();
+        setTimeout(()=>{currentLevel++; if(currentLevel<levels.length){renderLevel(); resArea.innerHTML='';} else {showFinal();}},1200);
+      } else {
+        playBuzz();
+        const retryBtn = document.createElement('button'); retryBtn.textContent='Retry Level'; retryBtn.onclick = ()=>{resArea.innerHTML=''; renderLevel();};
+        const skipBtn = document.createElement('button'); skipBtn.className='secondary'; skipBtn.textContent='Skip Level'; skipBtn.onclick = ()=>{resArea.innerHTML=''; currentLevel++; if(currentLevel<levels.length) renderLevel(); else showFinal();};
+        const ctr = document.createElement('div'); ctr.style.marginTop='10px'; ctr.appendChild(retryBtn); ctr.appendChild(skipBtn); resArea.appendChild(ctr);
+      }
+    }
+
+    function showFinal(){
+      document.getElementById('gameCard').classList.add('hidden'); document.getElementById('finalCard').classList.remove('hidden');
+      playVictory(); spawnConfetti();
+      // compute aggregate score
+      let totalCorrect=0, totalQ=0; levels.forEach((lv,i)=>{ const log = answersLog[i]; if(log) totalCorrect += log.answers.filter(a=>{ return a.given && (a.given.toString().toLowerCase().includes(a.correct.toString().split('/')[0].trim().toLowerCase()) || a.correct.toString().toLowerCase().includes(a.given.toString().toLowerCase())); }).length; totalQ += lv.qty; });
+      const percent = Math.round(totalCorrect/totalQ*100);
+      document.getElementById('finalMessage').textContent = `${avatar}, kamu menyelesaikan semua level. Skor total: ${totalCorrect}/${totalQ} (${percent}%). Great job!`;
+    }
+
+    function pauseResume(){ paused = !paused; document.getElementById('pauseBtn').textContent = paused? 'Resume': 'Pause'; }
+
+    function restartGame(){ location.reload(); }
+
+    function downloadReport(){
+      const data = {player:avatar, date:new Date().toISOString(), log:answersLog};
+      const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+      const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='game_report_'+(new Date().toISOString().slice(0,10))+'.json'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    // small safeguard: resume audio context on first user gesture
+    window.addEventListener('click',()=>{ if(audioCtx.state==='suspended') audioCtx.resume(); },{once:true});
+  </script>
+</body>
+</html>
